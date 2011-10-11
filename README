@@ -1,0 +1,67 @@
+ USA ePay PHP Library.
+     v1.6.6 - June 1st, 2010
+
+      Copyright (c) 2010 USAePay
+
+
+Note:  If you have any questions on the use of this library, please contact
+the developer integration support department:
+   devsupport@usaepay.com
+   866-872-3729 x706
+   
+For more documentation on using the library, please see
+http://help.usaepay.com/developer/phplibrary
+
+
+
+REQUIREMENTS
+------------
+-PHP 4.3.x or higher (http://www.php.net) 
+
+-HTTPs streams support in PHP
+or
+-Curl/ssl module installed (http://curl.haxx.se/) 
+
+The library should work with any webserver (Apache, ISS, etc) and any operating system (Linux, 
+Mac OS X, Windows) that is supported by PHP and curl. USAePay tests on and will support the 
+following installations:
+	- Linux, FreeBSD and Mac OS X with Apache
+	- Windows with Apache
+	- Windows with ISS
+
+
+QUICK INSTALL
+-------------
+
+wget http://www.usaepay.com/topics/usaepay-php-1.6.6.tgz
+tar xzvf usaepay-php-1.6.6.tgz
+cp usaepay-php-1.6.6/usaepay.php /usr/local/lib/php
+
+
+VERIFYING INSTALLATION
+----------------------
+
+This package includes a test script "verify_install.php"  that can be used to verify
+that your PHP installation is capable of using this library.  Make sure to modify the script
+to include the correct path to the library.  Then place the script in web accessable directiory
+and access it from a web browser.  If any problems are detected,  follow the on screen 
+instructions.
+
+
+EXAMPLE AND TESTMODE
+--------------------
+
+See example.php for an example use of the library.  When you are in
+"testmode" the following credit card numbers give the following responses:
+
+4005562233445564                                                                                               
+Approved, full avs match, cvv2 match                                                                           
+                                                                                                               
+4787292258606353                                                                                               
+Approved, zip match only, cvv2 match                                                                           
+                                                                                                               
+5424180279791740                                                                                               
+Approved, no avs, no cvv2      
+
+Any other card number will return a decline.
+ 
