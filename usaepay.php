@@ -1,12 +1,12 @@
 <?php
 // USA ePay PHP Library.
-//	v1.6.10 - September 25th, 2011
+//	v1.6.11 - October 27th, 2011
 //
 // 	Copyright (c) 2001-2011 USAePay
 //	For assistance please contact devsupport@usaepay.com
 //
 
-define("USAEPAY_VERSION", "1.6.10");
+define("USAEPAY_VERSION", "1.6.11");
 
 
 /**
@@ -103,7 +103,11 @@ class umTransaction {
 	var $ignoresslcerterrors;  // Bypasses ssl certificate errors.  It is highly recommended that you do not use this option.  Fix your openssl installation instead!
 	var $cabundle;      // manually specify location of root ca bundle (useful of root ca is not in default location)
 	var $transport;     // manually select transport to use (curl or stream), by default the library will auto select based on what is available
-		
+	var $clerk;					// Indicates the clerk/person processing transaction, for reporting purposes. (optional)
+	var $terminal;				// Indiactes the terminal used to process transaction, for reporting purposes. (optional)
+	var $restaurant_table;	// Indicates the restaurant table, for reporting purposes. (optional)
+	var $ticketedevent;  // ID of Event when doing a ticket sale
+	
 	// Card Authorization - Verified By Visa and Mastercard SecureCode
 	var $cardauth;    	// enable card authentication
 	var $pares; 		// 
@@ -256,19 +260,46 @@ class umTransaction {
 	 * @param double $cost
 	 * @param string $taxable
 	 * @param int $qty
+	 * @param string $refnum
 	 */
-	function addLine($sku, $name, $description, $cost, $qty, $taxable)
-	{		
-		$this->lineitems[] = array(
-				'sku' => $sku,
-				'name' => $name,
-				'description' => $description,
-				'cost' => $cost,
-				'taxable' => $taxable,
-				'qty' => $qty
-			);
+	function addLine($sku, $name='', $description='', $cost='', $qty='', $taxable='', $refnum=0)
+	{
+		if(is_array($sku))
+		{
+			$vars = $sku;
+			$this->lineitems[] = array(
+						'sku' => @$vars['sku'],
+						'name' => @$vars['name'],
+						'description' => @$vars['description'],
+						'cost' => @$vars['cost'],
+						'taxable' => @$vars['taxable'],
+						'qty' => @$vars['qty'],
+						'refnum' => @$vars['refnum'],
+					);
+			
+		} else {
+			$this->lineitems[] = array(
+					'sku' => $sku,
+					'name' => $name,
+					'description' => $description,
+					'cost' => $cost,
+					'taxable' => $taxable,
+					'qty' => $qty,
+					'refnum' => $refnum
+				);
+		}
 	}
 
+	function getLineTotal()
+	{
+		$total = 0;
+		foreach($this->lineitems as $line)
+		{
+			$total+=(intval($line['cost']*100) * intval($line['qty']));
+		}
+		return number_format($total/100, 2, '.','');
+	}
+	
 	/**
 	 * Remove all line items
 	 * 
@@ -411,6 +442,8 @@ class umTransaction {
 			$data["UMline{$c}cost"] = $lineitem['cost'];
 			$data["UMline{$c}taxable"] = $lineitem['taxable'];
 			$data["UMline{$c}qty"] = $lineitem['qty'];
+			if($lineitem['refnum']) 
+				$data["UMline{$c}prodRefNum"] = $lineitem['refnum'];
 			$c++;	
 		}
 				
@@ -478,8 +511,8 @@ class umTransaction {
 		$this->profiler_reason=(isset($tmp["UMprofilerReason"])?$tmp["UMprofilerReason"]:"");
 		
 		// Obsolete variable (for backward compatibility) At some point they will no longer be set.
-		$this->avs=(isset($tmp["UMavsResult"])?$tmp["UMavsResult"]:"");
-		$this->cvv2=(isset($tmp["UMcvv2Result"])?$tmp["UMcvv2Result"]:"");
+		//$this->avs=(isset($tmp["UMavsResult"])?$tmp["UMavsResult"]:"");
+		//$this->cvv2=(isset($tmp["UMcvv2Result"])?$tmp["UMcvv2Result"]:"");
 		
 		
 		if(isset($tmp["UMcctransid"])) $this->cctransid=$tmp["UMcctransid"];
@@ -730,7 +763,7 @@ class umTransaction {
 			return false;
 		}
 		
-		if($xml->Result!='A') {
+		if($xml->Response!='A') {
 			$this->error = $xml->Reason;
 			$this->errorcode = $xml->ErrorCode;
 			return false;
@@ -1060,6 +1093,10 @@ class umTransaction {
 			'UMmicr' => 'micr',
 			'UMsession' => 'session',
 			'UMisRecurring' => 'isrecurring',
+			'UMclerk' => 'clerk',
+			'UMtranterm' => 'terminal',
+			'UMresttable' => 'restaurant_table',
+			'UMticketedEvent' => 'ticketedevent',
 			);
 	}
 	function buildQuery($data)
