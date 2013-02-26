@@ -4,7 +4,7 @@ Copyright 2013 USAePay, Inc.
 
 [http://www.usaepay.com](http://www.usaepay.com)
 
-[http://help.usaepay.com/developer/phplib](http://help.usaepay.com/developer/phplib)
+[http://help.usaepay.com/developer/phplibrary](http://help.usaepay.com/developer/phplibrary)
 
 SYNOPSIS
 --------
