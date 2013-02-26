@@ -1,6 +1,6 @@
 <?php
 // USAePay PHP Library.
-//	v1.6.13 - Feb 26th, 2013
+//	v1.6.12 - Feb 26th, 2013
 //
 // 	Copyright (c) 2001-2013 USAePay
 //	For assistance please contact devsupport@usaepay.com

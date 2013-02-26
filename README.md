@@ -1,4 +1,4 @@
-USAePay PHP Library v1.6.13
+USAePay PHP Library v1.6.12
 =================================
 Copyright 2013 USAePay, Inc.
 
