@@ -1,12 +1,12 @@
 <?php
-// USA ePay PHP Library.
-//	v1.6.11 - October 27th, 2011
+// USAePay PHP Library.
+//	v1.6.13 - Feb 26th, 2013
 //
-// 	Copyright (c) 2001-2011 USAePay
+// 	Copyright (c) 2001-2013 USAePay
 //	For assistance please contact devsupport@usaepay.com
 //
 
-define("USAEPAY_VERSION", "1.6.11");
+define("USAEPAY_VERSION", "1.6.12");
 
 
 /**
@@ -107,6 +107,9 @@ class umTransaction {
 	var $terminal;				// Indiactes the terminal used to process transaction, for reporting purposes. (optional)
 	var $restaurant_table;	// Indicates the restaurant table, for reporting purposes. (optional)
 	var $ticketedevent;  // ID of Event when doing a ticket sale
+	var $ifauthexpired;  // controls what happens when capturing an authorization that has expire.  options are 'ignore','error','reauth'.
+	var $authexpiredays;  //set the number of days an authorization is valid for.  defaults to merchant account setting.
+	var $inventorylocation; // set the warehouse to pull inventory from.  defaults to source key setting.
 	
 	// Card Authorization - Verified By Visa and Mastercard SecureCode
 	var $cardauth;    	// enable card authentication
@@ -354,7 +357,7 @@ class umTransaction {
 			if(in_array(strtolower($this->command), array("check:sale","check:credit", "check", "checkcredit","reverseach") )) {
 					if(!$this->account) return "Account Number is required";
 					if(!$this->routing) return "Routing Number is required";
-			} else if (strtolower($this->command)== 'cash') {
+			} else if (in_array(strtolower($this->command) , array('cash','cash:refund','cash:sale','external:check:sale','external:cc:sale','external:gift:sale'))) {
 				// nothing needs to be validated for cash 
 			} else {
 				if(!$this->magstripe) {
@@ -444,6 +447,15 @@ class umTransaction {
 			$data["UMline{$c}qty"] = $lineitem['qty'];
 			if($lineitem['refnum']) 
 				$data["UMline{$c}prodRefNum"] = $lineitem['refnum'];
+			
+			//optional level 3 data
+			if($lineitem['um']) $data["UMline{$c}um"] = $lineitem['um'];
+			if($lineitem['taxrate']) $data["UMline{$c}taxrate"] = $lineitem['taxrate'];
+			if($lineitem['taxamount']) $data["UMline{$c}taxamount"] = $lineitem['taxamount'];
+			if($lineitem['taxclass']) $data["UMline{$c}taxclass"] = $lineitem['taxclass'];
+			if($lineitem['commoditycode']) $data["UMline{$c}commoditycode"] = $lineitem['commoditycode'];
+			if($lineitem['discountrate']) $data["UMline{$c}discountrate"] = $lineitem['discountrate'];
+			if($lineitem['discountamount']) $data["UMline{$c}discountamount"] = $lineitem['discountamount'];
 			$c++;	
 		}
 				
@@ -1097,6 +1109,10 @@ class umTransaction {
 			'UMtranterm' => 'terminal',
 			'UMresttable' => 'restaurant_table',
 			'UMticketedEvent' => 'ticketedevent',
+			'UMifAuthExpired' => 'ifauthexpired',
+			'UMauthExpireDays' => 'authexpiredays',
+			'UMinventorylocation' => 'inventorylocation',
+			
 			);
 	}
 	function buildQuery($data)
