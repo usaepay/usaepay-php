@@ -278,6 +278,13 @@ class umTransaction {
 						'taxable' => @$vars['taxable'],
 						'qty' => @$vars['qty'],
 						'refnum' => @$vars['refnum'],
+						'um' => @$vars['um'],
+						'taxrate' => @$vars['taxrate'],
+						'taxamount' => @$vars['taxamount'],
+						'taxclass' => @$vars['taxclass'],
+						'commoditycode' => @$vars['commoditycode'],
+						'discountrate' => @$vars['discountrate'],
+						'discountamount' => @$vars['discountamount'],
 					);
 			
 		} else {
