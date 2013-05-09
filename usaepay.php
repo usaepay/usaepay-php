@@ -352,7 +352,7 @@ class umTransaction {
 	function CheckData()
 	{
 		if(!$this->key) return "Source Key is required";
-		if(in_array(strtolower($this->command), array("cc:capture", "cc:refund", "refund", "check:refund","capture", "creditvoid", 'quicksale', 'quickcredit')))
+		if(in_array(strtolower($this->command), array("cc:capture", "cc:refund", "refund", "check:refund","capture", "creditvoid", 'quicksale', 'quickcredit','refund:adjust','void:release')))
 		{
 			if(!$this->refnum) return "Reference Number is required";		
 		}else if(in_array(strtolower($this->command), array("svp")))
