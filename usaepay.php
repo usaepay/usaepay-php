@@ -1,12 +1,12 @@
 <?php
 // USAePay PHP Library.
-//	v1.6.12 - Feb 26th, 2013
+//	v1.6.13 - Jun 25th, 2013
 //
 // 	Copyright (c) 2001-2013 USAePay
 //	For assistance please contact devsupport@usaepay.com
 //
 
-define("USAEPAY_VERSION", "1.6.12");
+define("USAEPAY_VERSION", "1.6.13");
 
 
 /**
@@ -22,11 +22,15 @@ class umTransaction {
 							// (including tax, shipping, etc)
 	var $invoice;		// invoice number.  must be unique.  limited to 10 digits.  use orderid if you need longer. 
 	
-	// Required for Commercial Card support
+	// Required for Level 2 - Commercial Card support
 	var $ponum;			// Purchase Order Number
 	var $tax;			// Tax
 	var $nontaxable;	// Order is non taxable
 	var $digitalgoods; //digital goods indicator (ecommerce)
+	
+	// Level 3 support
+	var $duty;
+	var $shipfromzip;
 	
 	// Amount details (optional)
 	var $tip; 			// Tip
@@ -132,6 +136,8 @@ class umTransaction {
 	var $billtax;
 	var $billsourcekey;
 	
+	// tokenization
+	var $savecard;		// create a card token if the sale is approved, returns a cardref variable
 	
 	// Manually mark as recurring
 	var $isrecurring;
@@ -220,6 +226,7 @@ class umTransaction {
 	var $balance;  //remaining balance
 	var $cardlevelresult;
 	var $procrefnum;
+	var $cardref; 		// card number token
 	
 	// Cardinal Response Fields
 	var $acsurl;	// card auth url
@@ -428,6 +435,9 @@ class umTransaction {
 				case 'allowpartialauth':
 					if($this->allowpartialauth===true) $data['UMallowPartialAuth'] = 'Yes';
 					break;
+				case 'savecard':
+					if($this->savecard) $data['UMsaveCard'] = 'y';
+					break;
 				default: 
 					$data[$apifield] = $this->$classfield;
 			}
@@ -528,6 +538,7 @@ class umTransaction {
 		$this->profiler_score=(isset($tmp["UMprofilerScore"])?$tmp["UMprofilerScore"]:"");
 		$this->profiler_response=(isset($tmp["UMprofilerResponse"])?$tmp["UMprofilerResponse"]:"");
 		$this->profiler_reason=(isset($tmp["UMprofilerReason"])?$tmp["UMprofilerReason"]:"");
+		$this->cardref=(isset($tmp["UMcardRef"])?$tmp["UMcardRef"]:"");
 		
 		// Obsolete variable (for backward compatibility) At some point they will no longer be set.
 		//$this->avs=(isset($tmp["UMavsResult"])?$tmp["UMavsResult"]:"");
@@ -1119,6 +1130,9 @@ class umTransaction {
 			'UMifAuthExpired' => 'ifauthexpired',
 			'UMauthExpireDays' => 'authexpiredays',
 			'UMinventorylocation' => 'inventorylocation',
+			'UMduty' => 'duty',
+			'UMshipfromzip' => 'shipfromzip',
+			'UMsaveCard' => 'savecard'
 			
 			);
 	}
