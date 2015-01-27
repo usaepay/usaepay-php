@@ -1,12 +1,12 @@
 <?php
 // USAePay PHP Library.
-//	v1.6.13 - Jun 25th, 2013
+//	v1.7.0
 //
-// 	Copyright (c) 2001-2013 USAePay
+// 	Copyright (c) 2001-2015 USAePay
 //	For assistance please contact devsupport@usaepay.com
 //
 
-define("USAEPAY_VERSION", "1.6.13");
+define("USAEPAY_VERSION", "1.7.0");
 
 
 /**
@@ -99,6 +99,7 @@ class umTransaction {
 	var $custreceiptname;	// name of custom receipt template
 	var $ignoreduplicate; // prevent the system from detecting and folding duplicates
 	var $ip;			// ip address of remote host
+	var $geolocation;	// geo location information for transaciton.  Format lat,long
 	var $testmode;		// test transaction but don't process it
 	var $usesandbox;    // use sandbox server instead of production
 	var $timeout;       // transaction timeout.  defaults to 45 seconds
@@ -374,7 +375,7 @@ class umTransaction {
 			} else if (in_array(strtolower($this->command) , array('cash','cash:refund','cash:sale','external:check:sale','external:cc:sale','external:gift:sale'))) {
 				// nothing needs to be validated for cash 
 			} else {
-				if(!$this->magstripe) {
+				if(!$this->magstripe &&!preg_match('~^enc://~',$this->card)) {
 					if(!$this->card) return "Credit Card Number is required ({$this->command})";
 					if(!$this->exp) return "Expiration Date is required";
 				}
@@ -492,6 +493,9 @@ class umTransaction {
 			// populate hash value
 			$data['UMhash'] = $hash;			
 		}				
+		
+		// Tell the gateway what the client side timeout is
+		if(@$this->timeout) $data['UMtimeout'] = intval($this->timeout);
 		
 		// Figure out URL
 		$url = ($this->gatewayurl?$this->gatewayurl:"https://www.usaepay.com/gate");
@@ -1132,7 +1136,8 @@ class umTransaction {
 			'UMinventorylocation' => 'inventorylocation',
 			'UMduty' => 'duty',
 			'UMshipfromzip' => 'shipfromzip',
-			'UMsaveCard' => 'savecard'
+			'UMsaveCard' => 'savecard',
+			'UMlocation' => 'geolocation',
 			
 			);
 	}
@@ -1363,5 +1368,3 @@ function _uePhpLibPrivateXMLEntities($num)
 	return (($num > 127 && $num < 160) ? $chars[$num] : "&#".$num.";" );
 }
 
-
-?>
