@@ -1,0 +1,6 @@
+{
+  "name": "portsidedesign/usaepay-php",
+  "description": "Fork of USAePay's PHP API library that includes composer package support.",
+  "version": "1",
+  "type": "library"
+}
