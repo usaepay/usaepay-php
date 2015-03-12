@@ -8,7 +8,7 @@ USAePay PHP Library
 SYNOPSIS
 --------
 The USAePay PHP library is a class for running transactions on the USAePay
-gateway.  Its feature set roughly follows the [transaction api](http://help.usaepay.com/developer/transaction).  If
+gateway.  Its feature set roughly follows the [transaction api](http://help.usaepay.com/developer/transactionapi).  If
 you are looking for more features, take a look at [soap api](http://help.usaepay.com/developer/soap/).
 
 SUPPORT
