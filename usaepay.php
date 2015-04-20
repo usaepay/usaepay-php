@@ -14,43 +14,43 @@ define("USAEPAY_VERSION", "1.7.0");
  *
  */
 class umTransaction {
-	
+
 	// Required for all transactions
 	var $key;			// Source key
 	var $pin;			// Source pin (optional)
-	var $amount;		// the entire amount that will be charged to the customers card 
+	var $amount;		// the entire amount that will be charged to the customers card
 							// (including tax, shipping, etc)
-	var $invoice;		// invoice number.  must be unique.  limited to 10 digits.  use orderid if you need longer. 
-	
+	var $invoice;		// invoice number.  must be unique.  limited to 10 digits.  use orderid if you need longer.
+
 	// Required for Level 2 - Commercial Card support
 	var $ponum;			// Purchase Order Number
 	var $tax;			// Tax
 	var $nontaxable;	// Order is non taxable
 	var $digitalgoods; //digital goods indicator (ecommerce)
-	
+
 	// Level 3 support
 	var $duty;
 	var $shipfromzip;
-	
+
 	// Amount details (optional)
 	var $tip; 			// Tip
 	var $shipping;		// Shipping charge
 	var $discount; 	// Discount amount (ie gift certificate or coupon code)
-	var $subtotal; 	// if subtotal is set, then 
-							// subtotal + tip + shipping - discount + tax must equal amount 
+	var $subtotal; 	// if subtotal is set, then
+							// subtotal + tip + shipping - discount + tax must equal amount
 							// or the transaction will be declined.  If subtotal is left blank
 							// then it will be ignored
 	var $currency;		// Currency of $amount
 	var $allowpartialauth; //set to true if a partial authorization (less than the full $amount)  will be accepted
-		
+
 	// Required Fields for Card Not Present transacitons (Ecommerce)
 	var $card;			// card number, no dashes, no spaces
 	var $exp;			// expiration date 4 digits no /
 	var $cardholder; 	// name of card holder
 	var $street;		// street address
 	var $zip;			// zip code
-	
-	// Fields for Card Present (POS) 
+
+	// Fields for Card Present (POS)
 	var $magstripe;  	// mag stripe data.  can be either Track 1, Track2  or  Both  (Required if card,exp,cardholder,street and zip aren't filled in)
 	var $cardpresent;   // Must be set to true if processing a card present transaction  (Default is false)
 	var $termtype;  	// The type of terminal being used:  Optons are  POS - cash register, StandAlone - self service terminal,  Unattended - ie gas pump, Unkown  (Default:  Unknown)
@@ -58,7 +58,7 @@ class umTransaction {
 	var $contactless;  	// Magstripe was read with contactless reader:  yes, no  (default is no)
 	var $dukpt;			// DUK/PT for PIN Debit
 	var $signature;     // Signature Capture data
-		
+
 	// fields required for check transactions
 	var $account;		// bank account number
 	var $routing;		// bank routing number
@@ -73,23 +73,23 @@ class umTransaction {
 	var $auxonus;
 	var $epccode;
 	var $micr;
-	
-	
+
+
 	// Fields required for Secure Vault Payments (Direct Pay)
 	var $svpbank;		// ID of cardholders bank
 	var $svpreturnurl;	// URL that the bank should return the user to when tran is completed
 	var $svpcancelurl; 	// URL that the bank should return the user if they cancel
-	
-	
+
+
 
 	// Option parameters
 	var $origauthcode;	// required if running postauth transaction.
-	var $command;		// type of command to run; Possible values are: 
-						// sale, credit, void, preauth, postauth, check and checkcredit. 
+	var $command;		// type of command to run; Possible values are:
+						// sale, credit, void, preauth, postauth, check and checkcredit.
 						// Default is sale.
-	var $orderid;		// Unique order identifier.  This field can be used to reference 
-						// the order for which this transaction corresponds to. This field 
-						// can contain up to 64 characters and should be used instead of 
+	var $orderid;		// Unique order identifier.  This field can be used to reference
+						// the order for which this transaction corresponds to. This field
+						// can contain up to 64 characters and should be used instead of
 						// UMinvoice when orderids longer that 10 digits are needed.
 	var $custid;   // Alpha-numeric id that uniquely identifies the customer.
 	var $description;	// description of charge
@@ -115,11 +115,11 @@ class umTransaction {
 	var $ifauthexpired;  // controls what happens when capturing an authorization that has expire.  options are 'ignore','error','reauth'.
 	var $authexpiredays;  //set the number of days an authorization is valid for.  defaults to merchant account setting.
 	var $inventorylocation; // set the warehouse to pull inventory from.  defaults to source key setting.
-	
+
 	// Card Authorization - Verified By Visa and Mastercard SecureCode
 	var $cardauth;    	// enable card authentication
-	var $pares; 		// 
-	
+	var $pares; 		//
+
 	// Third Party Card Authorization
 	var $xid;
 	var $cavv;
@@ -128,7 +128,7 @@ class umTransaction {
 	// Customer Database
 	var $addcustomer;		//  Save transaction as a recurring transaction:  yes/no
 	var $recurring;		// (obsolete,  see the addcustomer)
-	
+
 	var $schedule;		//  How often to run transaction: daily, weekly, biweekly, monthly, bimonthly, quarterly, annually.  Default is monthly, set to disabled if you don't want recurring billing
 	var $numleft; 		//  The number of times to run. Either a number or * for unlimited.  Default is unlimited.
 	var $start;			//  When to start the schedule.  Default is tomorrow.  Must be in YYYYMMDD  format.
@@ -136,13 +136,13 @@ class umTransaction {
 	var $billamount;	//  Optional recurring billing amount.  If not specified, the amount field will be used for future recurring billing payments
 	var $billtax;
 	var $billsourcekey;
-	
+
 	// tokenization
 	var $savecard;		// create a card token if the sale is approved, returns a cardref variable
-	
+
 	// Manually mark as recurring
 	var $isrecurring;
-	
+
 	// Billing Fields
 	var $billfname;
 	var $billlname;
@@ -170,7 +170,7 @@ class umTransaction {
 	var $shipzip;
 	var $shipcountry;
 	var $shipphone;
-	
+
 	// Custom Fields
 	var $custom1;
 	var $custom2;
@@ -192,19 +192,19 @@ class umTransaction {
 	var $custom18;
 	var $custom19;
 	var $custom20;
-	
-	
+
+
 	// Line items  (see addLine)
 	var $lineitems;
-	
-	
+
+
 	var $comments; // Additional transaction details or comments (free form text field supports up to 65,000 chars)
-	
+
 	var $software; // Allows developers to identify their application to the gateway (for troubleshooting purposes)
-	
+
 	// Fraud Profiling
 	var $session;
-	
+
 	// response fields
 	var $rawresult;		// raw result from gateway
 	var $result;		// full result:  Approved, Declined, Error
@@ -228,24 +228,24 @@ class umTransaction {
 	var $cardlevelresult;
 	var $procrefnum;
 	var $cardref; 		// card number token
-	
+
 	// Cardinal Response Fields
 	var $acsurl;	// card auth url
 	var $pareq;		// card auth request
 	var $cctransid; // cardinal transid
-	
+
 	// Fraud Profiler
 	var $profiler_score;
 	var $profiler_response;
 	var $profiler_reason;
-	
+
 	// Errors Response Feilds
 	var $error; 		// error message if result is an error
 	var $errorcode; 	// numerical error code
 	var $blank;			// blank response
 	var $transporterror; 	// transport error
-	
-	
+
+
 	// Constructor
 	function umTransaction()
 	{
@@ -261,7 +261,7 @@ class umTransaction {
 		$this->software="USAePay PHP API v" . USAEPAY_VERSION;
 
 	}
-	
+
 	/**
 	 * Add a line item to the transaction
 	 *
@@ -294,7 +294,7 @@ class umTransaction {
 						'discountrate' => @$vars['discountrate'],
 						'discountamount' => @$vars['discountamount'],
 					);
-			
+
 		} else {
 			$this->lineitems[] = array(
 					'sku' => $sku,
@@ -317,18 +317,18 @@ class umTransaction {
 		}
 		return number_format($total/100, 2, '.','');
 	}
-	
+
 	/**
 	 * Remove all line items
-	 * 
+	 *
 	 */
 	function clearLines()
 	{
-		$this->lineitems=array();		
+		$this->lineitems=array();
 	}
-	
+
 	/**
-	 * Clear all transaction parameters except for the key and pin. Should be run between transactions if not 
+	 * Clear all transaction parameters except for the key and pin. Should be run between transactions if not
 	 * reinsantiating the umTransaction class
 	 *
 	 */
@@ -340,7 +340,7 @@ class umTransaction {
 			if($classfield=='software' || $classfield=='key' || $classfield=='pin') continue;
 			unset($this->$classfield);
 		}
-		
+
 		// Set default values.
 		$this->command="sale";
 		$this->result="Error";
@@ -349,9 +349,9 @@ class umTransaction {
 		$this->cardpresent=false;
 		$this->lineitems = array();
 		if(isset($_SERVER['REMOTE_ADDR'])) $this->ip=$_SERVER['REMOTE_ADDR'];
-		
+
 	}
-	
+
 	/**
 	 * Verify that all required data has been set
 	 *
@@ -362,24 +362,25 @@ class umTransaction {
 		if(!$this->key) return "Source Key is required";
 		if(in_array(strtolower($this->command), array("cc:capture", "cc:refund", "refund", "check:refund","capture", "creditvoid", 'quicksale', 'quickcredit','refund:adjust','void:release', 'check:void','void')))
 		{
-			if(!$this->refnum) return "Reference Number is required";		
+			if(!$this->refnum) return "Reference Number is required";
 		}else if(in_array(strtolower($this->command), array("svp")))
 		{
-			if(!$this->svpbank) return "Bank ID is required";		
-			if(!$this->svpreturnurl) return "Return URL is required";		
-			if(!$this->svpcancelurl) return "Cancel URL is required";		
+			if(!$this->svpbank) return "Bank ID is required";
+			if(!$this->svpreturnurl) return "Return URL is required";
+			if(!$this->svpcancelurl) return "Cancel URL is required";
 		}  else {
 			if(in_array(strtolower($this->command), array("check:sale","check:credit", "check", "checkcredit","reverseach") )) {
 					if(!$this->account) return "Account Number is required";
 					if(!$this->routing) return "Routing Number is required";
 			} else if (in_array(strtolower($this->command) , array('cash','cash:refund','cash:sale','external:check:sale','external:cc:sale','external:gift:sale'))) {
-				// nothing needs to be validated for cash 
+				// nothing needs to be validated for cash
 			} else {
 				if(!$this->magstripe &&!preg_match('~^enc://~',$this->card)) {
 					if(!$this->card) return "Credit Card Number is required ({$this->command})";
 					if(!$this->exp) return "Expiration Date is required";
 				}
 			}
+			if ($this->command !== "cc:save"){
 			$this->amount=preg_replace("/[^0-9\.]/","",$this->amount);
 			if(!$this->amount) return "Amount is required";
 			if(!$this->invoice && !$this->orderid) return "Invoice number or Order ID is required";
@@ -387,11 +388,12 @@ class umTransaction {
 				//if(!$this->cardholder) return "Cardholder Name is required";
 				//if(!$this->street) return "Street Address is required";
 				//if(!$this->zip) return "Zipcode is required";
+				}
 			}
 		}
 		return 0;
 	}
-	
+
 	/**
 	 * Send transaction to the USAePay Gateway and parse response
 	 *
@@ -409,7 +411,7 @@ class umTransaction {
 			$this->errorcode=10129;
 			return false;
 		}
-		
+
 		// populate the data
 		$map = $this->getFieldMap();
 		$data = array();
@@ -431,7 +433,7 @@ class umTransaction {
 					if($this->billsourcekey) $data['UMbillsourcekey'] = 'yes';
 					break;
 				case 'cardpresent':
-					if($this->cardpresent) $data['UMcardpresent'] = '1'; 
+					if($this->cardpresent) $data['UMcardpresent'] = '1';
 					break;
 				case 'allowpartialauth':
 					if($this->allowpartialauth===true) $data['UMallowPartialAuth'] = 'Yes';
@@ -439,19 +441,19 @@ class umTransaction {
 				case 'savecard':
 					if($this->savecard) $data['UMsaveCard'] = 'y';
 					break;
-				default: 
+				default:
 					$data[$apifield] = $this->$classfield;
 			}
 		}
-		
+
 		if(isset($data['UMcheckimagefront']) || isset($data['UMcheckimageback'])) $data['UMcheckimageencoding'] = 'base64';
-		
+
 		// tack on custom fields
 		for($i=1; $i<=20; $i++)
 		{
 			if($this->{"custom$i"}) $data["UMcustom$i"] = $this->{"custom$i"};
 		}
-		
+
 		// tack on line level detail
 		$c=1;
 		if(!is_array($this->lineitems)) $this->lineitems=array();
@@ -463,9 +465,9 @@ class umTransaction {
 			$data["UMline{$c}cost"] = $lineitem['cost'];
 			$data["UMline{$c}taxable"] = $lineitem['taxable'];
 			$data["UMline{$c}qty"] = $lineitem['qty'];
-			if($lineitem['refnum']) 
+			if($lineitem['refnum'])
 				$data["UMline{$c}prodRefNum"] = $lineitem['refnum'];
-			
+
 			//optional level 3 data
 			if($lineitem['um']) $data["UMline{$c}um"] = $lineitem['um'];
 			if($lineitem['taxrate']) $data["UMline{$c}taxrate"] = $lineitem['taxrate'];
@@ -474,37 +476,37 @@ class umTransaction {
 			if($lineitem['commoditycode']) $data["UMline{$c}commoditycode"] = $lineitem['commoditycode'];
 			if($lineitem['discountrate']) $data["UMline{$c}discountrate"] = $lineitem['discountrate'];
 			if($lineitem['discountamount']) $data["UMline{$c}discountamount"] = $lineitem['discountamount'];
-			$c++;	
+			$c++;
 		}
-				
+
 		// Create hash if pin has been set.
 		if(trim($this->pin))
 		{
 			// generate random seed value
 			$seed = microtime(true) . rand();
-			
+
 			// assemble prehash data
 			$prehash = $this->command . ":" . trim($this->pin) . ":" . $this->amount . ":" . $this->invoice . ":" . $seed;
-			
+
 			// if sha1 is available,  create sha1 hash,  else use md5
 			if(function_exists('sha1')) $hash = 's/' . $seed . '/' . sha1($prehash) . '/n';
 			else $hash = 'm/' . $seed . '/' . md5($prehash) . '/n';
-			
+
 			// populate hash value
-			$data['UMhash'] = $hash;			
-		}				
-		
+			$data['UMhash'] = $hash;
+		}
+
 		// Tell the gateway what the client side timeout is
 		if(@$this->timeout) $data['UMtimeout'] = intval($this->timeout);
-		
+
 		// Figure out URL
 		$url = ($this->gatewayurl?$this->gatewayurl:"https://www.usaepay.com/gate");
 		if($this->usesandbox) $url = "https://sandbox.usaepay.com/gate";
-			
+
 		// Post data to Gateway
 		$result=$this->httpPost($url, $data);
 		if($result===false) return false;
-		
+
 		// result is in urlencoded format, parse into an array
 		parse_str($result,$tmp);
 
@@ -515,12 +517,12 @@ class umTransaction {
 			$this->resultcode="E";
 			$this->error="Error parsing data from card processing gateway.";
 			$this->errorcode=10132;
-			return false;			
+			return false;
 		}
 
-		// Store results		
-		$this->result=(isset($tmp["UMstatus"])?$tmp["UMstatus"]:"Error");	
-		$this->resultcode=(isset($tmp["UMresult"])?$tmp["UMresult"]:"E");	
+		// Store results
+		$this->result=(isset($tmp["UMstatus"])?$tmp["UMstatus"]:"Error");
+		$this->resultcode=(isset($tmp["UMresult"])?$tmp["UMresult"]:"E");
 		$this->authcode=(isset($tmp["UMauthCode"])?$tmp["UMauthCode"]:"");
 		$this->refnum=(isset($tmp["UMrefNum"])?$tmp["UMrefNum"]:"");
 		$this->batch=(isset($tmp["UMbatch"])?$tmp["UMbatch"]:"");
@@ -543,25 +545,25 @@ class umTransaction {
 		$this->profiler_response=(isset($tmp["UMprofilerResponse"])?$tmp["UMprofilerResponse"]:"");
 		$this->profiler_reason=(isset($tmp["UMprofilerReason"])?$tmp["UMprofilerReason"]:"");
 		$this->cardref=(isset($tmp["UMcardRef"])?$tmp["UMcardRef"]:"");
-		
+
 		// Obsolete variable (for backward compatibility) At some point they will no longer be set.
 		//$this->avs=(isset($tmp["UMavsResult"])?$tmp["UMavsResult"]:"");
 		//$this->cvv2=(isset($tmp["UMcvv2Result"])?$tmp["UMcvv2Result"]:"");
-		
-		
+
+
 		if(isset($tmp["UMcctransid"])) $this->cctransid=$tmp["UMcctransid"];
 		if(isset($tmp["UMacsurl"])) $this->acsurl=$tmp["UMacsurl"];
 		if(isset($tmp["UMpayload"])) $this->pareq=$tmp["UMpayload"];
-		
+
 		if($this->resultcode == "A") return true;
 		return false;
-		
+
 	}
-	
+
 	function ProcessQuickSale()
 	{
 		$this->command='quicksale';
-		
+
 		// check that we have the needed data
 		$tmp=$this->CheckData();
 		if($tmp)
@@ -572,7 +574,7 @@ class umTransaction {
 			$this->errorcode=10129;
 			return false;
 		}
-		
+
 				// Create hash if pin has been set.
 		if(!trim($this->pin))
 		{
@@ -582,33 +584,33 @@ class umTransaction {
 			$this->errorcode=999;
 			return false;
 		}
-		
+
 		// generate random seed value
 		$seed = microtime(true) . rand();
-		
+
 		// assemble prehash data
 		$prehash = $this->key . $seed . trim($this->pin);
-		
+
 		// hash the data
 		$hash = sha1($prehash);
-		
-		
+
+
 		$data = '<?xml version="1.0" encoding="UTF-8"?>' .
-				'<SOAP-ENV:Envelope xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/" xmlns:ns1="urn:usaepay" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:SOAP-ENC="http://schemas.xmlsoap.org/soap/encoding/" SOAP-ENV:encodingStyle="http://schemas.xmlsoap.org/soap/encoding/">' . 
+				'<SOAP-ENV:Envelope xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/" xmlns:ns1="urn:usaepay" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:SOAP-ENC="http://schemas.xmlsoap.org/soap/encoding/" SOAP-ENV:encodingStyle="http://schemas.xmlsoap.org/soap/encoding/">' .
 				'<SOAP-ENV:Body>' .
 				'<ns1:runQuickSale>' .
 				'<Token xsi:type="ns1:ueSecurityToken">' .
 				'<ClientIP xsi:type="xsd:string">' . $this->ip . '</ClientIP>' .
 				'<PinHash xsi:type="ns1:ueHash">' .
 				'<HashValue xsi:type="xsd:string">' . $hash . '</HashValue>' .
-				'<Seed xsi:type="xsd:string">' . $seed . '</Seed>' . 
+				'<Seed xsi:type="xsd:string">' . $seed . '</Seed>' .
 				'<Type xsi:type="xsd:string">sha1</Type>' .
 				'</PinHash>' .
 				'<SourceKey xsi:type="xsd:string">' . $this->key . '</SourceKey>' .
 				'</Token>' .
 				'<RefNum xsi:type="xsd:integer">' . preg_replace('/[^0-9]/','',$this->refnum) . '</RefNum>' .
-				'<Details xsi:type="ns1:TransactionDetail">' . 
-				'<Amount xsi:type="xsd:double">' . $this->xmlentities($this->amount) . '</Amount>' . 
+				'<Details xsi:type="ns1:TransactionDetail">' .
+				'<Amount xsi:type="xsd:double">' . $this->xmlentities($this->amount) . '</Amount>' .
 				'<Description xsi:type="xsd:string">' . $this->xmlentities($this->description) . '</Description>'.
 				'<Discount xsi:type="xsd:double">' . $this->xmlentities($this->discount) . '</Discount>' .
 				'<Invoice xsi:type="xsd:string">' . $this->xmlentities($this->invoice) . '</Invoice>' .
@@ -624,17 +626,17 @@ class umTransaction {
 				'</ns1:runQuickSale>' .
 				'</SOAP-ENV:Body>' .
 				'</SOAP-ENV:Envelope>';
-		
+
 		// Figure out URL
 		$url = ($this->gatewayurl?$this->gatewayurl:"https://www.usaepay.com/soap/gate/15E7FB61");
 		if($this->usesandbox) $url = "https://sandbox.usaepay.com/soap/gate/15E7FB61";
-		
+
 		// Post data to Gateway
 		$result=$this->httpPost($url, array('xml'=>$data));
-		
-		
+
+
 		if($result===false) return false;
-		
+
 		if(preg_match('~<AuthCode[^>]*>(.*)</AuthCode>~', $result, $m)) $this->authcode=$m[1];
 		if(preg_match('~<AvsResult[^>]*>(.*)</AvsResult>~', $result, $m)) $this->avs_result=$m[1];
 		if(preg_match('~<AvsResultCode[^>]*>(.*)</AvsResultCode>~', $result, $m)) $this->avs_result_code=$m[1];
@@ -653,20 +655,20 @@ class umTransaction {
 		if(preg_match('~<Result[^>]*>(.*)</Result>~', $result, $m)) $this->result=$m[1];
 		if(preg_match('~<ResultCode[^>]*>(.*)</ResultCode>~', $result, $m)) $this->resultcode=$m[1];
 		if(preg_match('~<VpasResultCode[^>]*>(.*)</VpasResultCode>~', $result, $m)) $this->vpas_result_code=$m[1];
-		
-		
+
+
 		// Store results
 		if($this->resultcode == "A") return true;
 		return false;
 	}
-	
-	
-	
-	
+
+
+
+
 	function ProcessQuickCredit()
 	{
 		$this->command='quickcredit';
-		
+
 		// check that we have the needed data
 		$tmp=$this->CheckData();
 		if($tmp)
@@ -677,7 +679,7 @@ class umTransaction {
 			$this->errorcode=10129;
 			return false;
 		}
-		
+
 				// Create hash if pin has been set.
 		if(!trim($this->pin))
 		{
@@ -687,32 +689,32 @@ class umTransaction {
 			$this->errorcode=999;
 			return false;
 		}
-		
+
 		// generate random seed value
 		$seed = microtime(true) . rand();
-		
+
 		// assemble prehash data
 		$prehash = $this->key . $seed . trim($this->pin);
-		
+
 		// hash the data
 		$hash = sha1($prehash);
-		
+
 		$data = '<?xml version="1.0" encoding="UTF-8"?>' .
-				'<SOAP-ENV:Envelope xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/" xmlns:ns1="urn:usaepay" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:SOAP-ENC="http://schemas.xmlsoap.org/soap/encoding/" SOAP-ENV:encodingStyle="http://schemas.xmlsoap.org/soap/encoding/">' . 
+				'<SOAP-ENV:Envelope xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/" xmlns:ns1="urn:usaepay" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:SOAP-ENC="http://schemas.xmlsoap.org/soap/encoding/" SOAP-ENV:encodingStyle="http://schemas.xmlsoap.org/soap/encoding/">' .
 				'<SOAP-ENV:Body>' .
 				'<ns1:runQuickCredit>' .
 				'<Token xsi:type="ns1:ueSecurityToken">' .
 				'<ClientIP xsi:type="xsd:string">' . $this->ip . '</ClientIP>' .
 				'<PinHash xsi:type="ns1:ueHash">' .
 				'<HashValue xsi:type="xsd:string">' . $hash . '</HashValue>' .
-				'<Seed xsi:type="xsd:string">' . $seed . '</Seed>' . 
+				'<Seed xsi:type="xsd:string">' . $seed . '</Seed>' .
 				'<Type xsi:type="xsd:string">sha1</Type>' .
 				'</PinHash>' .
 				'<SourceKey xsi:type="xsd:string">' . $this->key . '</SourceKey>' .
 				'</Token>' .
 				'<RefNum xsi:type="xsd:integer">' . preg_replace('/[^0-9]/','',$this->refnum) . '</RefNum>' .
-				'<Details xsi:type="ns1:TransactionDetail">' . 
-				'<Amount xsi:type="xsd:double">' . $this->xmlentities($this->amount) . '</Amount>' . 
+				'<Details xsi:type="ns1:TransactionDetail">' .
+				'<Amount xsi:type="xsd:double">' . $this->xmlentities($this->amount) . '</Amount>' .
 				'<Description xsi:type="xsd:string">' . $this->xmlentities($this->description) . '</Description>'.
 				'<Discount xsi:type="xsd:double">' . $this->xmlentities($this->discount) . '</Discount>' .
 				'<Invoice xsi:type="xsd:string">' . $this->xmlentities($this->invoice) . '</Invoice>' .
@@ -728,15 +730,15 @@ class umTransaction {
 				'</ns1:runQuickCredit>' .
 				'</SOAP-ENV:Body>' .
 				'</SOAP-ENV:Envelope>';
-		
+
 		// Figure out URL
 		$url = ($this->gatewayurl?$this->gatewayurl:"https://www.usaepay.com/soap/gate/15E7FB61");
 		if($this->usesandbox) $url = "https://sandbox.usaepay.com/soap/gate/15E7FB61";
-		
+
 		// Post data to Gateway
 		$result=$this->httpPost($url, array('xml'=>$data));
 		if($result===false) return false;
-		
+
 		if(preg_match('~<AuthCode[^>]*>(.*)</AuthCode>~', $result, $m)) $this->authcode=$m[1];
 		if(preg_match('~<AvsResult[^>]*>(.*)</AvsResult>~', $result, $m)) $this->avs_result=$m[1];
 		if(preg_match('~<AvsResultCode[^>]*>(.*)</AvsResultCode>~', $result, $m)) $this->avs_result_code=$m[1];
@@ -755,58 +757,58 @@ class umTransaction {
 		if(preg_match('~<Result[^>]*>(.*)</Result>~', $result, $m)) $this->result=$m[1];
 		if(preg_match('~<ResultCode[^>]*>(.*)</ResultCode>~', $result, $m)) $this->resultcode=$m[1];
 		if(preg_match('~<VpasResultCode[^>]*>(.*)</VpasResultCode>~', $result, $m)) $this->vpas_result_code=$m[1];
-		
-		
-		// Store results		
+
+
+		// Store results
 		if($this->resultcode == "A") return true;
 		return false;
 	}
-	
+
 	function getSession()
 	{
 		$seed = md5(mt_rand());
 		$action = 'getsession';
-		
+
 		// build hash
 		$prehash = $action . ":" . $this->pin . ":" . $seed;
 		$hash = 's/' . $seed . '/' . sha1($prehash);
-		
+
 		// Figure out URL
 		$url = 'https://www.usaepay.com/interface/profiler/';
 		if(preg_match('~https://([^/]*)/~i', $this->gatewayurl, $m)) {
 			$url = 'https://' . $m[1] . '/interface/profiler/';
 		}
-		
+
 		// Look for usesandbox
 		if($this->usesandbox) $url = "https://sandbox.usaepay.com/interface/profiler/";
-		
+
 		// Add request paramters
 		$url .=  $action . '?SourceKey=' . rawurlencode($this->key) . '&Hash=' . rawurlencode($hash);
-		
+
 		// Make Rest Call
 		$output = file_get_contents($url);
 		if(!$output) {
 			$this->error = "Blank response";
 			return false;
 		}
-		
+
 		// Parse response
 		$xml = simplexml_load_string($output);
 		if(!$xml) {
 			$this->error = "Unable to parse response";
 			return false;
 		}
-		
+
 		if($xml->Response!='A') {
 			$this->error = $xml->Reason;
 			$this->errorcode = $xml->ErrorCode;
 			return false;
 		}
-		
+
 		// assemble template
 		$query ='org_id=' .$xml->OrgID . '&session_id=' . $xml->SessionID;
 		$baseurl = "https://h.online-metrix.net/fp/";
-		
+
 		$out = '';
 		$out .= '<p style="background:url('.$baseurl.'clear.png?'.$query.'&m=1)"></p>';
 		$out .= '<img src="'.$baseurl.'clear.png?'.$query.'&m=2" width="1" height="1" alt="">';
@@ -814,10 +816,10 @@ class umTransaction {
 		$out .= '<object type="application/x-shockwave-flash" data="'.$baseurl.'fp.swf?'.$query.'" width="1" height="1" id="thm_fp">';
 		$out .= '	<param name="movie" value="'.$baseurl.'fp.swf?'.$query.'" />';
 		$out .= '<div></div></object>';
-		
+
 		return array('sessionid'=>$xml->SessionID, 'orgid'=>$xml->OrgID, 'html'=>$out);
 	}
-	
+
 	/**
 	 * Verify Proper Installation of USAePay class and required PHP Support
 	 *
@@ -832,23 +834,23 @@ class umTransaction {
 		<td valign="top"><?php
 			if(version_compare(phpversion(),"4.3.0")) {
 				?><font color="green">Ok</font><br>
-				PHP version <?php echo phpversion()?> on <?php echo PHP_OS?> detected. 
-				<?php				
+				PHP version <?php echo phpversion()?> on <?php echo PHP_OS?> detected.
+				<?php
 			} else {
 				?><font color="red">Warning</font><br>
 				PHP version <?php echo phpversion()?> detected. It is recommended that you
 				upgrade to the most recent release of PHP.
-				<?php				
+				<?php
 			}
 		?></td></tr>
 		<tr><td valign="Top">Checking CURL Extension</td>
 		<td valign="top"><?php
-			if(function_exists("curl_version")) {	
+			if(function_exists("curl_version")) {
 				$tmp=curl_version();
 				// PHP 5 returns an array,  version 4 returns a string
-				if(is_array($tmp)) { 
+				if(is_array($tmp)) {
 					$curl_version=$tmp["version"];
-					$curl_ssl_version=$tmp["ssl_version"];					
+					$curl_ssl_version=$tmp["ssl_version"];
 				} else {
 					$tmp=explode(" ", $tmp);
 					foreach($tmp as $piece)
@@ -857,7 +859,7 @@ class umTransaction {
 						if(stristr($lib,"curl")) $curl_version=$version;
 						elseif(stristr($lib,"ssl")) $curl_ssl_version=$version;
 					}
-					
+
 				}
 				?><font color="green">Ok</font><br>
 				Curl Extension (<?php echo $curl_version?>) detected.
@@ -873,7 +875,7 @@ class umTransaction {
 		</td></tr>
 		<tr><td valign="Top">Checking CURL SSL Support</td>
 		<td valign="top"><?php
-			if($curl_ssl_version) {	
+			if($curl_ssl_version) {
 				?><font color="green">Ok</font><br>
 				SSL Version (<?php echo $curl_ssl_version?>) detected.
 				<?php
@@ -884,7 +886,7 @@ class umTransaction {
 				with SSL support.
 				<?php
 			}
-		?>					
+		?>
 		</td></tr>
 		<tr><td valign="Top">Checking Communication with the Gateway</td>
 		<td valign="top"><?php
@@ -892,7 +894,7 @@ class umTransaction {
 			if(!$curl_version) {
 				?><font color="red">Error</font><br>
 				No curl support
-				<?php				
+				<?php
 			} else {
 				$ch = curl_init(($this->gatewayurl?$this->gatewayurl:"https://www.usaepay.com/secure/gate.php") . "?VersionCheck=1&UMsoftware=" . rawurlencode($this->software));
 				if(!$ch) {
@@ -900,9 +902,9 @@ class umTransaction {
 					Curl failed to connect to server:  (NULL $ch returned)
 					<?php
 				} else {
-					
+
 					curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-					if($this->cabundle) curl_setopt($ch, CURLOPT_CAINFO, $this->cabundle);				
+					if($this->cabundle) curl_setopt($ch, CURLOPT_CAINFO, $this->cabundle);
 
 					$result=curl_exec($ch);
 					parse_str($result, $return);
@@ -910,26 +912,26 @@ class umTransaction {
 						$ssl_failed=false;
 						?><font color="green">Ok</font><br>
 						Successfully connected to the gateway.  Detected version (<?php echo $return["UMversion"]?>) of the USAePay gateway API.
-						<?php						
+						<?php
 					} else {
 						$ch = curl_init(($this->gatewayurl?$this->gatewayurl:"https://www.usaepay.com/secure/gate.php") . "?VersionCheck=1&UMsoftware=" . rawurlencode($this->software));
-						if($this->cabundle) curl_setopt($ch, CURLOPT_CAINFO, $this->cabundle);				
+						if($this->cabundle) curl_setopt($ch, CURLOPT_CAINFO, $this->cabundle);
 						curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
 						curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, 0);
-						curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 0);				
+						curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 0);
 						$result=curl_exec($ch);
 						parse_str($result, $return);
 						if($return["UMversion"]) {
 							?><font color="red">Warning</font><br>
-							
+
 							Successfully connected to the gateway but could not verify SSL certificate.  This usually indicates that you
-							do not have curl set up with the proper root CA certificate.  It is recommended that you install an up to date 
+							do not have curl set up with the proper root CA certificate.  It is recommended that you install an up to date
 							root ca bundle.  As a <b>temporary</b> work around you may disable the ssl cert check by adding the following to your script:<br><br><tt>
 							$tran->ignoresslcerterrors=true;<br>
 							<br></tt>
-							<?php						
+							<?php
 							$ch = curl_init("https://www.verisign.com");
-							if($this->cabundle) curl_setopt($ch, CURLOPT_CAINFO, $this->cabundle);				
+							if($this->cabundle) curl_setopt($ch, CURLOPT_CAINFO, $this->cabundle);
 							curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
 							$result=curl_exec($ch);
 							if(strlen($result)) {
@@ -942,9 +944,9 @@ class umTransaction {
 								Unable to verify SSL certificate for VeriSign.  This would indicate that you do not have a root CA bundle installed. See below.
 								<?php
 							}
-												
-							
-							
+
+
+
 						} else {
 							$ch = curl_init("https://216.133.244.70/secure/gate.php?VersionCheck=1&UMsoftware=" . rawurlencode($this->software));
 							curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
@@ -954,7 +956,7 @@ class umTransaction {
 							parse_str($result, $return);
 							if($return["UMversion"]) {
 								?><font color="red">Warning</font><br>
-								
+
 								Successfully connected to the gateway using a static IP but could not connect using hostname. This would indicate
 								that you do not have DNS setup correctly.  Please correct your server configuration to include a valid
 								DNS server. As a temporary work around you may add the following to your script:<br><br><tt>
@@ -967,19 +969,19 @@ class umTransaction {
 								Unable to establish connection to the USAePay Gateway.  It is possible that you are firewalling
 								outbound traffic from your server.  To correct this problem,  you must add an allow entry in
 								your firewall for ip <?php echo gethostbyname("www.usaepay.com")?> on port 443;
-								<?php								
-								
+								<?php
+
 							}
-							
+
 						}
-						
+
 					}
-				}				
+				}
 			}
-		?>					
+		?>
 		</td></tr>
 		<?php if($ssl_failed) {?>
-		
+
 		<tr><td valign="Top">Looking for root CA Bundle</td>
 		<td valign="top"><?php
 			if(strstr(PHP_OS,"WIN")!==false) {
@@ -988,21 +990,21 @@ class umTransaction {
 					if(is_file($certpath)) break;
 					else unset($certpath);
 				}
-				
+
 				if(!$certpath) $certpath="c:\windows\curl-ca-bundle.crt";
 			} else {
-				
+
 				foreach(array("/usr/share/curl/curl-ca-bundle.crt","/usr/local/share/curl/curl-ca-bundle.crt","/etc/curl/curl-ca-bundle.crt") as $certpath)
 				{
 					if(is_file($certpath)) break;
 					else unset($certpath);
 				}
-				
+
 				if(!$certpath) $certpath="/usr/share/curl/curl-ca-bundle.crt";
 			}
-		
-		
-			if(is_readable($certpath)) {	
+
+
+			if(is_readable($certpath)) {
 				?><font color="green">Ok</font><br>
 				A root CA bundle was found in "<?php echo $certpath?>".  Since the above test failed,  its possible that curl is not
 				correctly configured to use this bundle.  You can correct the problem by add the following code to your script:<br><br><tt>
@@ -1011,48 +1013,48 @@ class umTransaction {
 				<br><br>
 				It is also possible that your root CA bundle is out dated. Your root CA bundle was last updated <?php echo date("m/d/y", filemtime($certpath))?>.
 				You can download a new file from:
-				<a href="https://www.usaepay.com/topics/curl-ca-bundle.crt">https://www.usaepay.com/topics/curl-ca-bundle.crt</a>				
-				</tt>  
+				<a href="https://www.usaepay.com/topics/curl-ca-bundle.crt">https://www.usaepay.com/topics/curl-ca-bundle.crt</a>
+				</tt>
 				<?php
 			} else {
 				?><font color="red">Error</font><br>
-				Unable to locate your root CA bundle file. You can correct this by downloading a bundle file from: 
+				Unable to locate your root CA bundle file. You can correct this by downloading a bundle file from:
 				<a href="https://www.usaepay.com/topics/curl-ca-bundle.crt">https://www.usaepay.com/topics/curl-ca-bundle.crt</a>
 				Once downloaded save this file to: <?php echo $certpath?> You may also need to add the following code:<br><br><tt>
 				$tran->cabundle='<?php echo $certpath?>';
-				</tt> 
+				</tt>
 				<br><br>
 				<?php
 			}
-		?>					
+		?>
 		</td></tr>
 		<?php } ?>
 
 		</table>
 		<?php
 	}
-	
+
 	function getFieldMap()
 	{
-		return array("UMkey" => 'key', 
+		return array("UMkey" => 'key',
 			"UMcommand" => 'command',
 			"UMauthCode" => 'origauthcode',
 			"UMcard" => 'card',
 			"UMexpir" => 'exp',
-			"UMbillamount" => 'billamount', 
-			"UMamount" => 'amount', 
-			"UMinvoice" => 'invoice', 
-			"UMorderid" => 'orderid', 
-			"UMponum" => 'ponum', 
-			"UMtax" => 'tax', 
+			"UMbillamount" => 'billamount',
+			"UMamount" => 'amount',
+			"UMinvoice" => 'invoice',
+			"UMorderid" => 'orderid',
+			"UMponum" => 'ponum',
+			"UMtax" => 'tax',
 			"UMnontaxable" => 'nontaxable',
-			"UMtip" => 'tip', 
-			"UMshipping" => 'shipping', 
-			"UMdiscount" => 'discount', 
-			"UMsubtotal" => 'subtotal', 
-			"UMcurrency" => 'currency', 
+			"UMtip" => 'tip',
+			"UMshipping" => 'shipping',
+			"UMdiscount" => 'discount',
+			"UMsubtotal" => 'subtotal',
+			"UMcurrency" => 'currency',
 			"UMname" => 'cardholder',
-			"UMstreet" => 'street', 
+			"UMstreet" => 'street',
 			"UMzip" => 'zip',
 			"UMdescription" => 'description',
 			"UMcomments" => 'comments',
@@ -1102,22 +1104,22 @@ class umTransaction {
 			"UMshipstate" => 'shipstate',
 			"UMshipzip" => 'shipzip',
 			"UMshipcountry" => 'shipcountry',
-			"UMshipphone" => 'shipphone', 
-			"UMcardauth" => 'cardauth', 
-			"UMpares" => 'pares', 
-			"UMxid" => 'xid', 
-			"UMcavv" => 'cavv', 
-			"UMeci" => 'eci', 
-			"UMcustid" => 'custid', 
-			"UMcardpresent" => 'cardpresent', 
-			"UMmagstripe" => 'magstripe', 
-			"UMdukpt" => 'dukpt', 
-			"UMtermtype" => 'termtype', 
-			"UMmagsupport" => 'magsupport', 
-			"UMcontactless" => 'contactless', 
-			"UMsignature" => 'signature', 
-			"UMsoftware" => 'software', 
-			"UMignoreDuplicate" => 'ignoreduplicate', 
+			"UMshipphone" => 'shipphone',
+			"UMcardauth" => 'cardauth',
+			"UMpares" => 'pares',
+			"UMxid" => 'xid',
+			"UMcavv" => 'cavv',
+			"UMeci" => 'eci',
+			"UMcustid" => 'custid',
+			"UMcardpresent" => 'cardpresent',
+			"UMmagstripe" => 'magstripe',
+			"UMdukpt" => 'dukpt',
+			"UMtermtype" => 'termtype',
+			"UMmagsupport" => 'magsupport',
+			"UMcontactless" => 'contactless',
+			"UMsignature" => 'signature',
+			"UMsoftware" => 'software',
+			"UMignoreDuplicate" => 'ignoreduplicate',
 			"UMrefNum" => 'refnum',
 			'UMauxonus' => 'auxonus',
 			'UMepcCode' => 'epccode',
@@ -1138,22 +1140,22 @@ class umTransaction {
 			'UMshipfromzip' => 'shipfromzip',
 			'UMsaveCard' => 'savecard',
 			'UMlocation' => 'geolocation',
-			
+
 			);
 	}
 	function buildQuery($data)
 	{
 		if(function_exists('http_build_query') && ini_get('arg_separator.output')=='&') return http_build_query($data);
-		
+
 		$tmp=array();
 		foreach($data as $key=>$val) $tmp[] = rawurlencode($key) . '=' . rawurlencode($val);
-		
+
 		return implode('&', $tmp);
-		
+
 	}
-	
+
 	function httpPost($url, $data)
-	{				
+	{
 		// if transport was not specified,  auto select transport
 		if(!$this->transport)
 		{
@@ -1165,26 +1167,26 @@ class umTransaction {
 				}
 			}
 		}
-		
-		
+
+
 		// Use selected transport to post request to the gateway
 		switch($this->transport)
 		{
 			case 'curl': return $this->httpPostCurl($url, $data);
 			case 'stream': return $this->httpPostPHP($url, $data);
 		}
-						
-		// No HTTPs libraries found,  return error		
+
+		// No HTTPs libraries found,  return error
 		$this->result="Error";
 		$this->resultcode="E";
 		$this->error="Libary Error: SSL HTTPS support not found";
 		$this->errorcode=10130;
-		return false;					
+		return false;
 	}
-	
+
 	function httpPostCurl($url, $data)
 	{
-		
+
 		//init the connection
 		$ch = curl_init($url);
 		if(!is_resource($ch))
@@ -1193,41 +1195,41 @@ class umTransaction {
 			$this->resultcode="E";
 			$this->error="Libary Error: Unable to initialize CURL ($ch)";
 			$this->errorcode=10131;
-			return false;			
+			return false;
 		}
-		
+
 		// set some options for the connection
 		curl_setopt($ch,CURLOPT_HEADER, 1);
 		curl_setopt($ch,CURLOPT_POST,1);
 		curl_setopt($ch,CURLOPT_TIMEOUT, ($this->timeout>0?$this->timeout:45));
 		curl_setopt($ch,CURLOPT_RETURNTRANSFER,1);
-		
+
 		// Bypass ssl errors - A VERY BAD IDEA
 		if($this->ignoresslcerterrors)
 		{
 			curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, 0);
 			curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 0);
 		}
-		
+
 		// apply custom ca bundle location
 		if($this->cabundle)
-		{	
-			curl_setopt($ch, CURLOPT_CAINFO, $this->cabundle);				
+		{
+			curl_setopt($ch, CURLOPT_CAINFO, $this->cabundle);
 		}
-		
+
 		// set proxy
 		if($this->proxyurl)
 		{
 			curl_setopt ($ch, CURLOPT_PROXYTYPE, CURLPROXY_HTTP);
 			curl_setopt ($ch, CURLOPT_PROXY, $this->proxyurl);
-		}		
-		
+		}
+
 		$soapcall=false;
 		if(is_array($data))
 		{
 			if(array_key_exists('xml',$data)) $soapcall=true;
 		}
-		
+
 		if($soapcall)
 		{
 			curl_setopt($ch, CURLOPT_HTTPHEADER, array(
@@ -1235,18 +1237,18 @@ class umTransaction {
 				"SoapAction: urn:ueSoapServerAction"
 			));
 			curl_setopt($ch,CURLOPT_POSTFIELDS,$data['xml']);
-			
+
 		} else {
-			// rawurlencode data 
-			$data = $this->buildQuery($data);		
-			
+			// rawurlencode data
+			$data = $this->buildQuery($data);
+
 			// attach the data
 			curl_setopt($ch,CURLOPT_POSTFIELDS,$data);
 		}
-		
+
 		// run the transfer
 		$result=curl_exec ($ch);
-		
+
 		//get the result and parse it for the response line.
 		if(!strlen($result))
 		{
@@ -1257,38 +1259,38 @@ class umTransaction {
 			$this->blank=1;
 			$this->transporterror=$this->curlerror=curl_error($ch);
 			curl_close ($ch);
-			return false;			
+			return false;
 		}
 		curl_close ($ch);
 		$this->rawresult=$result;
-		
+
 		if($soapcall) {
-			return $result;	
+			return $result;
 		}
-		
+
 		if(!$result) {
 			$this->result="Error";
 			$this->resultcode="E";
 			$this->error="Blank response from card processing gateway.";
 			$this->errorcode=10132;
-			return false;			
+			return false;
 		}
-		
+
 		// result will be on the last line of the return
 		$tmp=explode("\n",$result);
-		$result=$tmp[count($tmp)-1];		
-		
+		$result=$tmp[count($tmp)-1];
+
 		return $result;
 	}
-	
+
 	function httpPostPHP($url, $data)
 	{
 
-		
-		// rawurlencode data 
-		$data = $this->buildQuery($data);		
-		
-		// set stream http options		
+
+		// rawurlencode data
+		$data = $this->buildQuery($data);
+
+		// set stream http options
 		$options = array(
 			'http'=> array(
 				'method'=>'POST',
@@ -1300,18 +1302,18 @@ class umTransaction {
 	        ),
 	        'ssl' => array(
 	            'verify_peer' => ($this->ignoresslcerterrors?false:true),
-	            'allow_self_signed' => ($this->ignoresslcerterrors?true:false)	            
+	            'allow_self_signed' => ($this->ignoresslcerterrors?true:false)
 			)
 		);
-		
+
 		if($this->cabundle) $options['ssl']['cafile'] = $this->cabundle;
-		
+
 		if(trim($this->proxyurl)) $options['http']['proxy'] = $this->proxyurl;
-		
-		
+
+
 		// create stream context
 		$context = stream_context_create($options);
-		
+
 		// post data to gateway
 		$fd = fopen($url, 'r', null, $context);
 		if(!$fd)
@@ -1328,9 +1330,9 @@ class umTransaction {
 				$this->transporterror=$GLOBALS['php_errormsg'];
 			}
 			//curl_close ($ch);
-			return false;			
-		}		
-		
+			return false;
+		}
+
 		// pull result
 		$result = stream_get_contents($fd);
 
@@ -1345,20 +1347,20 @@ class umTransaction {
 			fclose($fd);
 			//$this->curlerror=curl_error($ch);
 			//curl_close ($ch);
-			return false;			
-		}		
-		
+			return false;
+		}
+
 		fclose($fd);
 		return $result;
-		
+
 	}
-	
+
 	function xmlentities($string)
 	{
 		$string = preg_replace('/[^a-zA-Z0-9 _\-\.\'\r\n]/e', '_uePhpLibPrivateXMLEntities("$0")', $string);
 		return $string;
 	}
-	
+
 }
 
 function _uePhpLibPrivateXMLEntities($num)
