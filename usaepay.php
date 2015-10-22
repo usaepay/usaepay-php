@@ -58,6 +58,7 @@ class umTransaction {
 	var $contactless;  	// Magstripe was read with contactless reader:  yes, no  (default is no)
 	var $dukpt;			// DUK/PT for PIN Debit
 	var $signature;     // Signature Capture data
+	var $reasoncode; // reversal/adjustment reason code
 
 	// fields required for check transactions
 	var $account;		// bank account number
@@ -115,7 +116,7 @@ class umTransaction {
 	var $ifauthexpired;  // controls what happens when capturing an authorization that has expire.  options are 'ignore','error','reauth'.
 	var $authexpiredays;  //set the number of days an authorization is valid for.  defaults to merchant account setting.
 	var $inventorylocation; // set the warehouse to pull inventory from.  defaults to source key setting.
-
+	
 	// Card Authorization - Verified By Visa and Mastercard SecureCode
 	var $cardauth;    	// enable card authentication
 	var $pares; 		//
@@ -545,7 +546,8 @@ class umTransaction {
 		$this->profiler_response=(isset($tmp["UMprofilerResponse"])?$tmp["UMprofilerResponse"]:"");
 		$this->profiler_reason=(isset($tmp["UMprofilerReason"])?$tmp["UMprofilerReason"]:"");
 		$this->cardref=(isset($tmp["UMcardRef"])?$tmp["UMcardRef"]:"");
-
+		$this->isduplicate=(isset($tmp["UMisDuplicate"])?$tmp["UMisDuplicate"]:"");
+		
 		// Obsolete variable (for backward compatibility) At some point they will no longer be set.
 		//$this->avs=(isset($tmp["UMavsResult"])?$tmp["UMavsResult"]:"");
 		//$this->cvv2=(isset($tmp["UMcvv2Result"])?$tmp["UMcvv2Result"]:"");
@@ -1115,6 +1117,7 @@ class umTransaction {
 			"UMmagstripe" => 'magstripe',
 			"UMdukpt" => 'dukpt',
 			"UMtermtype" => 'termtype',
+			"UMreasonCode" => 'reasoncode',
 			"UMmagsupport" => 'magsupport',
 			"UMcontactless" => 'contactless',
 			"UMsignature" => 'signature',
@@ -1369,4 +1372,3 @@ function _uePhpLibPrivateXMLEntities($num)
 	$num = ord($num);
 	return (($num > 127 && $num < 160) ? $chars[$num] : "&#".$num.";" );
 }
-
