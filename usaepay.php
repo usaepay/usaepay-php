@@ -1,12 +1,12 @@
 <?php
 // USAePay PHP Library.
-//	v1.7.0
+//	v1.7.1
 //
 // 	Copyright (c) 2001-2015 USAePay
 //	For assistance please contact devsupport@usaepay.com
 //
 
-define("USAEPAY_VERSION", "1.7.0");
+define("USAEPAY_VERSION", "1.7.1");
 
 
 /**
@@ -906,6 +906,7 @@ class umTransaction {
 				} else {
 
 					curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+					curl_setopt($ch,CURLOPT_SSLVERSION, 6);
 					if($this->cabundle) curl_setopt($ch, CURLOPT_CAINFO, $this->cabundle);
 
 					$result=curl_exec($ch);
@@ -919,6 +920,7 @@ class umTransaction {
 						$ch = curl_init(($this->gatewayurl?$this->gatewayurl:"https://www.usaepay.com/secure/gate.php") . "?VersionCheck=1&UMsoftware=" . rawurlencode($this->software));
 						if($this->cabundle) curl_setopt($ch, CURLOPT_CAINFO, $this->cabundle);
 						curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+						curl_setopt($ch,CURLOPT_SSLVERSION, 6);
 						curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, 0);
 						curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 0);
 						$result=curl_exec($ch);
@@ -935,6 +937,7 @@ class umTransaction {
 							$ch = curl_init("https://www.verisign.com");
 							if($this->cabundle) curl_setopt($ch, CURLOPT_CAINFO, $this->cabundle);
 							curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+							curl_setopt($ch,CURLOPT_SSLVERSION, 6);
 							$result=curl_exec($ch);
 							if(strlen($result)) {
 								?>
@@ -952,6 +955,7 @@ class umTransaction {
 						} else {
 							$ch = curl_init("https://216.133.244.70/secure/gate.php?VersionCheck=1&UMsoftware=" . rawurlencode($this->software));
 							curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+							curl_setopt($ch,CURLOPT_SSLVERSION, 6);
 							curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, 0);
 							curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 0);
 							$result=curl_exec($ch);
@@ -1206,6 +1210,7 @@ class umTransaction {
 		curl_setopt($ch,CURLOPT_POST,1);
 		curl_setopt($ch,CURLOPT_TIMEOUT, ($this->timeout>0?$this->timeout:45));
 		curl_setopt($ch,CURLOPT_RETURNTRANSFER,1);
+		curl_setopt($ch,CURLOPT_SSLVERSION, 6);
 
 		// Bypass ssl errors - A VERY BAD IDEA
 		if($this->ignoresslcerterrors)
